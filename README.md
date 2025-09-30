@@ -1,4 +1,5 @@
 # Com instal·lar la traducció?
+- Baixa't el fitxer `localization.json` d'aquest repositori. Guarda'l en un lloc que recordis.
 - Obre Steam
 - Busca Fields of Mistria a la llibreria
 - Instal·la el joc si no ho has fet encara
