@@ -5,14 +5,18 @@
 body{
     margin: 5px;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    max-width: 1200px;
+    background-color: #daf2f7;
+    display: flex;
+    justify-content: center;
 }
 #root{
+    max-width: 1200px;
     display: grid;
-    grid-template-rows: min-content min-content 1fr 1fr;
-    grid-template-areas: "menu"
-    "key-data"
+    grid-template-rows: min-content min-content 1fr min-content 1fr;
+    grid-template-areas: "title"
+    "menu"
     "translator"
+    "key-data"
     "mock";
     height: 100%;
     row-gap: 10px;
@@ -24,10 +28,15 @@ body{
     column-gap: 30px;
 }
 #key-data{
-    margin: 10px 0;
+    margin-top: 10px;
     grid-area: key-data;
     text-align: center;
     font-size: 0.6em;
+}
+#title{
+    grid-area: title;
+    text-align: center;
+    margin: 0;
 }
 #translator{
     grid-area: translator;
@@ -55,6 +64,7 @@ body{
     width:100%;
 }
 #dialog-name{
+    opacity: 0;
     padding-left: 7%;
     font-size: 1.25em;
     padding-top: 1.5%;
@@ -71,7 +81,7 @@ body{
     font-size: 0.7em;
     border-bottom: 1px solid black;
 }
-.original-line, .translated-line {
+.translated-line {
     background-color: #FFFFFFF1;
 }
 .original-line{

@@ -4,6 +4,7 @@
     </head>
     <body>
         <div id="root">
+            <h1 id="title">Traductor de Fields of Mistria</h1>
             <div id="menu">
                 <span>
                     <label># línia </label>
@@ -15,14 +16,14 @@
                 </span>
                 <span>
                     <a id="download-helper" hidden></a>
-                    <button id="saveButton">Guardar</button>
+                    <button id="saveButton">GUARDAR</button>
                 </span>
             </div>
-            <div id="key-data"></div>
             <div id="translator"></div>
+            <div id="key-data"></div>
             <div id="screen-mock">
                 <div id="dialog-section">
-                    <div id="dialog-name">Celine</div>
+                    <div id="dialog-name">.</div>
                     <div id="dialog-text">L'Adeline's té moltes responsabilitats, però per sort té un munt de gent que li dona suport també. Com tu, [Ari]!</div>
                 </div>
             </div>
@@ -58,6 +59,7 @@
         const translator = document.getElementById("translator")
         const dialogText = document.getElementById("dialog-text")
         const keyData = document.getElementById("key-data")
+        const saveButton = document.getElementById('saveButton')
 
         function translatorLine(nLine) { 
             const c = translator.children
@@ -69,6 +71,7 @@
         }
         
         let hasChanged = false
+        saveButton.disabled = !hasChanged
 
         function onChangeTextArea(e) {
             const index = e.target.listIndex 
@@ -79,6 +82,7 @@
             updateIsTranslatedEmoji(index)
             onFocusTextArea(e)
             hasChanged = true
+            saveButton.disabled = !hasChanged
         }
 
         function changeKeyData(e){
@@ -212,8 +216,9 @@
             else if(KEY_COMMANDS.END.includes(code)){ changeRowIndex(MAX_LINE) }
         });
 
-        document.getElementById('saveButton').addEventListener('click', ()=>{
+        saveButton.addEventListener('click', ()=>{
             hasChanged = false
+            saveButton.disabled = !hasChanged
             download(localized, "localization.json")
         })
 
