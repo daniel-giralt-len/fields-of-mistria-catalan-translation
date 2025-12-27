@@ -27,6 +27,7 @@
             </div>
         </div>
     </body>
+    <script src="order.js"></script>
     <script type="text/javascript">
         function clamp(min,max,val) { return Math.min(Math.max(min,val), max) }
 
@@ -45,7 +46,6 @@
 
         let localized, original
         let isTranslated = {}
-        let arrayIndexToLineIndex = {}
         function updateIsTranslated(lineKey){
             if(!(localized && original)){return}
             isTranslated[lineKey] = localized[lineKey] !== original[lineKey]
@@ -71,7 +71,7 @@
         function onChangeTextArea(e) {
             const index = e.target.textAreaIndex 
             const value = e.target.value
-            const lineIndex = arrayIndexToLineIndex[index + selectedRowIndex]
+            const lineIndex = orderedLines[index + selectedRowIndex]
             localized[lineIndex] = value
             isTranslated[lineIndex] = value && value.length > 0
             updateIsTranslatedEmoji(index)
@@ -107,13 +107,15 @@
             UP_ONE : [],
             DOWN_PAGE : ["PageDown"],
             UP_PAGE : ["PageUp"],
+            START: ["Home"],
+            END: ["End"],
         }
 
         const GITHUB_BASE_URL = 'https://raw.githubusercontent.com/daniel-giralt-len/fields-of-mistria-catalan-translation/refs/heads/main'
 
         function updateIsTranslatedEmoji(index) {
             const [,,isTranslatedHTMLElement] = translatorLine(index)
-            const lineIndex = arrayIndexToLineIndex[selectedRowIndex + index]
+            const lineIndex = orderedLines[selectedRowIndex + index]
             isTranslatedHTMLElement.innerText = isTranslated[lineIndex] ? "✔️" : "❌"
         }
 
@@ -123,9 +125,10 @@
             lineIndex.value = selectedRowIndex
             for(let i=0; i< N_LINES_IN_SCREEN; i++){
                 const ii = selectedRowIndex + i
-                const lineIndex = arrayIndexToLineIndex[ii]
+                const lineIndex = orderedLines[ii]
                 const [untranslatedHTMLElement, translatedHTMLElement, isTranslatedHTMLElement] = translatorLine(i)
                 untranslatedHTMLElement.innerHTML = original?.[lineIndex]
+                untranslatedHTMLElement.className = lineIndex.endsWith('/init') ? "original-line is-init" : "original-line"
                 translatedHTMLElement.value = isTranslated[lineIndex] ? localized?.[lineIndex] : ''
                 translatedHTMLElement.placeholder = localized?.[lineIndex]
                 updateIsTranslatedEmoji(i)
@@ -142,10 +145,6 @@
             const keys = Object.keys(localized)
             isTranslated={}
             keys.map(updateIsTranslated)
-            arrayIndexToLineIndex = keys.reduce((acc,key,index) => {
-                acc[index] = key
-                return acc
-            },{})
             MAX_LINE = keys.length
             changeRowIndex(selectedRowIndex)
         }
@@ -168,10 +167,13 @@
         
         document.addEventListener("keydown", (event) => {
             const code = event.code
+            
             if(KEY_COMMANDS.DOWN_PAGE.includes(code)){ changeRowIndex(selectedRowIndex+N_LINES_IN_SCREEN) }
             else if(KEY_COMMANDS.UP_PAGE.includes(code)){ changeRowIndex(selectedRowIndex-N_LINES_IN_SCREEN) }
             else if(KEY_COMMANDS.UP_ONE.includes(code)){ changeRowIndex(selectedRowIndex-1) }
             else if(KEY_COMMANDS.DOWN_ONE.includes(code)){ changeRowIndex(selectedRowIndex+1) }
+            else if(KEY_COMMANDS.START.includes(code)){ changeRowIndex(0) }
+            else if(KEY_COMMANDS.END.includes(code)){ changeRowIndex(MAX_LINE) }
         });
 
         document.getElementById('saveButton').addEventListener('click', ()=>{

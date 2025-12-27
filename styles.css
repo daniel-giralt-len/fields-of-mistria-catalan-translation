@@ -37,6 +37,9 @@ body{
     justify-content: center;
     align-items: flex-end;
 }
+.is-init{
+    border-top: 1px dashed black;
+}
 #dialog-section{
     background-image: url("dialog_bar.png");
     background-size: contain;
