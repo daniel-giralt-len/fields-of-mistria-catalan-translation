@@ -9,8 +9,9 @@ body{
 }
 #root{
     display: grid;
-    grid-template-rows: min-content 1fr 1fr;
+    grid-template-rows: min-content min-content 1fr 1fr;
     grid-template-areas: "menu"
+    "key-data"
     "translator"
     "mock";
     height: 100%;
@@ -21,6 +22,12 @@ body{
     display: flex;
     justify-content: center;
     column-gap: 30px;
+}
+#key-data{
+    margin: 10px 0;
+    grid-area: key-data;
+    text-align: center;
+    font-size: 0.6em;
 }
 #translator{
     grid-area: translator;

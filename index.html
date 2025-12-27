@@ -18,6 +18,7 @@
                     <button id="saveButton">Guardar</button>
                 </span>
             </div>
+            <div id="key-data"></div>
             <div id="translator"></div>
             <div id="screen-mock">
                 <div id="dialog-section">
@@ -56,6 +57,7 @@
         const lineIndexInput = document.getElementById('lineIndex')
         const translator = document.getElementById("translator")
         const dialogText = document.getElementById("dialog-text")
+        const keyData = document.getElementById("key-data")
 
         function translatorLine(nLine) { 
             const c = translator.children
@@ -69,7 +71,7 @@
         let hasChanged = false
 
         function onChangeTextArea(e) {
-            const index = e.target.textAreaIndex 
+            const index = e.target.listIndex 
             const value = e.target.value
             const lineIndex = orderedLines[index + selectedRowIndex]
             localized[lineIndex] = value
@@ -79,24 +81,58 @@
             hasChanged = true
         }
 
+        function changeKeyData(e){
+            const index = e.target.listIndex 
+            const lineIndex = orderedLines[index + selectedRowIndex]
+            keyData.innerText = lineIndex
+        }
+
         function onFocusTextArea(e) {
             const newText = e.target.value
             dialogText.innerText = newText
+        }
+
+        function onKeyDownTextArea(e){
+            const index = e.target.listIndex 
+            if(e.code==="Tab"){
+                if(!e.shiftKey && index == N_LINES_IN_SCREEN-1 && selectedRowIndex < MAX_LINE-1){
+                    changeRowIndex(selectedRowIndex+1)
+                    changeKeyData(e)
+                    onFocusTextArea(e)
+                    e.stopPropagation()
+                    e.preventDefault()
+                    return
+                }
+                if(e.shiftKey && index == 0 && selectedRowIndex > 0){
+                    changeRowIndex(selectedRowIndex-1)
+                    changeKeyData(e)
+                    onFocusTextArea(e)
+                    e.stopPropagation()
+                    e.preventDefault()
+                    return
+                }
+            }
         }
 
         function newTranslatorLine(index) {
             const originalLine = document.createElement("div")
             originalLine.className = "original-line"
             translator.appendChild(originalLine)
+            originalLine.addEventListener('focus', changeKeyData)
+            originalLine.listIndex = index
             const translatedLine = document.createElement("textarea")
             translatedLine.className = "translated-line"
             translatedLine.addEventListener('input', onChangeTextArea)
             translatedLine.addEventListener('focus', onFocusTextArea)
-            translatedLine.textAreaIndex = index
+            translatedLine.addEventListener('focus', changeKeyData)
+            translatedLine.addEventListener('keydown', onKeyDownTextArea)
+            translatedLine.listIndex = index
             translator.appendChild(translatedLine)
             const isTranslated = document.createElement("div")
             isTranslated.className = "is-translated"
             translator.appendChild(isTranslated)
+            isTranslated.addEventListener('focus', changeKeyData)
+            isTranslated.listIndex = index
         }
 
         let N_LINES_IN_SCREEN = 17
@@ -199,7 +235,7 @@
         })
 
         window.onbeforeunload = function() {
-            return hasChanged ? "Potser tinguis dades per a guardar, segur que vols sortir?" : undefined
+            return hasChanged ? "Potser tinguis dades per a guardar, segur que vols sortir? Perdràs els canvis." : undefined
         }
     </script>
 </html>
