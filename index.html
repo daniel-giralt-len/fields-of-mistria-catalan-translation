@@ -15,7 +15,7 @@
                     <input type="file" id="loadFile" />
                 </span>
                 <span>
-                    <a id="download-helper" hidden></a>
+                    <a id="download-helper"></a>
                     <button id="saveButton">GUARDAR</button>
                 </span>
             </div>
@@ -57,6 +57,7 @@
         const uploadInput = document.getElementById('loadFile')
         const lineIndexInput = document.getElementById('lineIndex')
         const translator = document.getElementById("translator")
+        const dialogName = document.getElementById("dialog-name")
         const dialogText = document.getElementById("dialog-text")
         const keyData = document.getElementById("key-data")
         const saveButton = document.getElementById('saveButton')
@@ -89,6 +90,8 @@
             const index = e.target.listIndex 
             const lineIndex = orderedLines[index + selectedRowIndex]
             keyData.innerText = lineIndex
+            const interlocutor = lineIndex.match(NAME_REGEX)?.[1] || "-"
+            dialogName.innerText = interlocutor
         }
 
         function onFocusTextArea(e) {
@@ -141,6 +144,7 @@
 
         let N_LINES_IN_SCREEN = 12
         let MAX_LINE = 100 
+        let NAME_REGEX = (/\/(Adeline|Balor|Caldarus|Celine|Darcy|Dell|Dozy|Eiland|Elsie|Errol|Hayden|Hemlock|Henrietta|Holt|Josephine|Juniper|Landen|Louis|Luc|Maple|March|Merri|Nora|Olric|Priestess|Reina|Ryis|Terithia|Valen|Vera)\//)
 
         const KEY_COMMANDS = {
             DOWN_ONE : [],
